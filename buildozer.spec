@@ -9,6 +9,9 @@ package.name = ramsha
 # (str) Package domain (needed for android packaging)
 package.domain = org.ramsha
 
+# (str) Application version
+version = 1.0
+
 # (list) Source files to include (let it empty to include all the files)
 source.include_exts = py,png,jpg,kv,atlas,db,html,css,js
 
