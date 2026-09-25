@@ -1,0 +1,393 @@
+from flask import Flask, render_template, session, redirect, url_for, jsonify, request
+from datetime import timedelta
+
+app = Flask(__name__)
+
+# =========================================================
+# SESSION
+# =========================================================
+
+app.secret_key = "ramsha_v2_secret_key"
+
+app.config["SESSION_PERMANENT"] = True
+app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(days=30)
+app.config["SESSION_COOKIE_HTTPONLY"] = True
+app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
+app.config["SESSION_COOKIE_SECURE"] = False
+
+
+# =========================================================
+# PRODUCTS
+# =========================================================
+
+PRODUCTS = [
+    {
+        "id": 1,
+        "name": "Red Bull",
+        "price": 250,
+        "store": "سوبر ماركت",
+        "category": "مشروبات",
+        "image": "https://images.unsplash.com/photo-1622543925917-763c34d1a86e?w=600"
+    },
+    {
+        "id": 2,
+        "name": "برغر لحم",
+        "price": 850,
+        "store": "مطاعم رمشة",
+        "category": "مطاعم",
+        "image": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600"
+    },
+    {
+        "id": 3,
+        "name": "بيتزا",
+        "price": 1200,
+        "store": "مطاعم رمشة",
+        "category": "مطاعم",
+        "image": "https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=600"
+    },
+    {
+        "id": 4,
+        "name": "منتج صيدلية",
+        "price": 500,
+        "store": "صيدلية رمشة",
+        "category": "صيدلية",
+        "image": "https://images.unsplash.com/photo-1585435557343-3b092031a831?w=600"
+    }
+]
+
+
+# =========================================================
+# CATEGORIES
+# =========================================================
+
+CATEGORIES = [
+    {"name": "الكل", "icon": "✨"},
+    {"name": "مطاعم", "icon": "🍔"},
+    {"name": "صيدلية", "icon": "💊"},
+    {"name": "سوبر ماركت", "icon": "🛒"},
+    {"name": "مشروبات", "icon": "🥤"}
+]
+
+
+# =========================================================
+# SESSION CART
+# =========================================================
+
+def get_product(product_id):
+    for product in PRODUCTS:
+        if product["id"] == product_id:
+            return product
+
+    return None
+
+
+def get_cart():
+    cart = session.get("cart")
+
+    if not isinstance(cart, dict):
+        cart = {}
+
+    return cart
+
+
+def cart_count():
+    cart = get_cart()
+
+    return sum(cart.values())
+
+
+def cart_total():
+    total = 0
+
+    for product_id, quantity in get_cart().items():
+
+        product = get_product(int(product_id))
+
+        if product:
+            total += product["price"] * quantity
+
+    return total
+
+
+# =========================================================
+# HOME
+# =========================================================
+
+@app.route("/")
+def home():
+
+    return render_template(
+        "index.html",
+        products=PRODUCTS,
+        categories=CATEGORIES,
+        cart_count=cart_count()
+    )
+
+
+# =========================================================
+# CART PAGE
+# =========================================================
+
+@app.route("/cart")
+def cart():
+
+    items = []
+
+    for product_id, quantity in get_cart().items():
+
+        product = get_product(int(product_id))
+
+        if not product:
+            continue
+
+        items.append({
+            "product": product,
+            "quantity": quantity,
+            "item_total": product["price"] * quantity
+        })
+
+    subtotal = sum(
+        item["item_total"]
+        for item in items
+    )
+
+    delivery_fee = 0 if not items else 100
+
+    grand_total = subtotal + delivery_fee
+
+    return render_template(
+        "cart.html",
+        items=items,
+        subtotal=subtotal,
+        delivery_fee=delivery_fee,
+        grand_total=grand_total,
+        cart_count=cart_count()
+    )
+
+
+# =========================================================
+# ADD TO CART
+# =========================================================
+
+@app.route("/cart/add/<int:product_id>", methods=["POST"])
+def add_to_cart(product_id):
+
+    product = get_product(product_id)
+
+    if not product:
+
+        return jsonify({
+            "success": False,
+            "message": "المنتج غير موجود"
+        }), 404
+
+    cart = get_cart()
+
+    key = str(product_id)
+
+    cart[key] = cart.get(key, 0) + 1
+
+    session["cart"] = cart
+
+    # مهم جدًا
+    session.permanent = True
+    session.modified = True
+
+    return jsonify({
+        "success": True,
+        "cart_count": cart_count()
+    })
+
+
+# =========================================================
+# INCREASE
+# =========================================================
+
+@app.route("/cart/increase/<int:product_id>", methods=["POST"])
+def increase_cart(product_id):
+
+    cart = get_cart()
+
+    key = str(product_id)
+
+    if key in cart:
+        cart[key] += 1
+
+    session["cart"] = cart
+    session.permanent = True
+    session.modified = True
+
+    return redirect(url_for("cart"))
+
+
+# =========================================================
+# DECREASE
+# =========================================================
+
+@app.route("/cart/decrease/<int:product_id>", methods=["POST"])
+def decrease_cart(product_id):
+
+    cart = get_cart()
+
+    key = str(product_id)
+
+    if key in cart:
+
+        cart[key] -= 1
+
+        if cart[key] <= 0:
+            del cart[key]
+
+    session["cart"] = cart
+    session.permanent = True
+    session.modified = True
+
+    return redirect(url_for("cart"))
+
+
+# =========================================================
+# REMOVE
+# =========================================================
+
+@app.route("/cart/remove/<int:product_id>", methods=["POST"])
+def remove_from_cart(product_id):
+
+    cart = get_cart()
+
+    key = str(product_id)
+
+    if key in cart:
+        del cart[key]
+
+    session["cart"] = cart
+    session.permanent = True
+    session.modified = True
+
+    return redirect(url_for("cart"))
+
+
+# =========================================================
+# CLEAR CART
+# =========================================================
+
+@app.route("/cart/clear", methods=["POST"])
+def clear_cart():
+
+    session["cart"] = {}
+
+    session.permanent = True
+    session.modified = True
+
+    return redirect(url_for("cart"))
+
+
+# =========================================================
+# CART API
+# =========================================================
+
+
+# =========================================================
+# CHECKOUT
+# =========================================================
+
+@app.route("/checkout")
+def checkout():
+
+    if not get_cart():
+        return redirect(url_for("cart"))
+
+    subtotal = cart_total()
+    delivery_fee = 100
+    grand_total = subtotal + delivery_fee
+
+    return render_template(
+        "checkout.html",
+        subtotal=subtotal,
+        delivery_fee=delivery_fee,
+        grand_total=grand_total,
+        cart_count=cart_count()
+    )
+
+
+@app.route("/api/order", methods=["POST"])
+def create_order():
+    import sqlite3
+
+    data = request.get_json() or {}
+
+    name = str(data.get("name", "")).strip()
+    phone = str(data.get("phone", "")).strip()
+    address = str(data.get("address", "")).strip()
+    notes = str(data.get("notes", "")).strip()
+    payment = str(data.get("payment", "")).strip()
+    transaction_number = str(data.get("transaction_number", "")).strip()
+
+    if not name or not phone or not address:
+        return jsonify({"success": False, "message": "يرجى إكمال بيانات العميل"}), 400
+
+    if payment not in ("cash", "shamcash"):
+        return jsonify({"success": False, "message": "طريقة الدفع غير صحيحة"}), 400
+
+    if payment == "shamcash" and not transaction_number:
+        return jsonify({"success": False, "message": "يرجى إدخال رقم عملية شام كاش"}), 400
+
+    subtotal = cart_total()
+    if subtotal <= 0:
+        return jsonify({"success": False, "message": "السلة فارغة"}), 400
+
+    delivery_fee = 100
+    grand_total = subtotal + delivery_fee
+
+    conn = sqlite3.connect("orders.db")
+    cur = conn.cursor()
+
+    cur.execute("""
+        INSERT INTO orders
+        (customer_name, phone, address, notes, payment_method,
+         transaction_number, subtotal, delivery_fee, grand_total)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    """, (
+        name,
+        phone,
+        address,
+        notes,
+        payment,
+        transaction_number,
+        subtotal,
+        delivery_fee,
+        grand_total
+    ))
+
+    order_id = cur.lastrowid
+    conn.commit()
+    conn.close()
+
+    session["cart"] = {}
+    session.modified = True
+
+    return jsonify({
+        "success": True,
+        "order_id": order_id
+    })
+
+@app.route("/api/cart")
+def cart_api():
+
+    return jsonify({
+        "success": True,
+        "count": cart_count(),
+        "total": cart_total()
+    })
+
+
+# =========================================================
+# RUN
+# =========================================================
+
+if __name__ == "__main__":
+
+    app.run(
+        host="0.0.0.0",
+        port=5000,
+        debug=True
+    )

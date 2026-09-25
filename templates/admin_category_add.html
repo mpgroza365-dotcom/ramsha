@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إضافة قسم - رمشة</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f6f8;
+            color: #222;
+        }
+
+        .header {
+            background: #ff7a00;
+            color: white;
+            padding: 18px;
+            text-align: center;
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 0 15px;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 3px 12px rgba(0,0,0,.08);
+        }
+
+        label {
+            display: block;
+            margin: 14px 0 7px;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+            font-family: Arial, sans-serif;
+        }
+
+        .hint {
+            color: #777;
+            font-size: 13px;
+            margin-top: 7px;
+        }
+
+        .save {
+            width: 100%;
+            margin-top: 20px;
+            border: 0;
+            background: #ff7a00;
+            color: white;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .back {
+            display: block;
+            margin-top: 12px;
+            text-align: center;
+            background: #f1f1f1;
+            color: #333;
+            text-decoration: none;
+            padding: 13px;
+            border-radius: 12px;
+            font-weight: bold;
+        }
+
+        .error {
+            background: #ffe5e5;
+            color: #c00;
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="header">
+    ➕ إضافة قسم جديد
+</div>
+
+<div class="container">
+
+    <div class="card">
+
+        {% if error %}
+            <div class="error">
+                {{ error }}
+            </div>
+        {% endif %}
+
+        <form method="POST">
+
+            <label>اسم القسم</label>
+
+            <input
+                type="text"
+                name="name"
+                placeholder="مثال: حلويات"
+                required
+            >
+
+            <label>أيقونة القسم</label>
+
+            <input
+                type="text"
+                name="icon"
+                placeholder="مثال: 🍰"
+                maxlength="10"
+            >
+
+            <div class="hint">
+                يمكنك استخدام إيموجي مثل 🍔 💊 🛒 🥤 🍰
+            </div>
+
+            <button class="save" type="submit">
+                💾 حفظ القسم
+            </button>
+
+        </form>
+
+        <a class="back" href="/admin/categories">
+            ↩️ العودة إلى الأقسام
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+</html>

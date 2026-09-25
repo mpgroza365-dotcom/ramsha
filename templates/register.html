@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>إنشاء حساب</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f7fb;
+        }
+
+        .box {
+            width: 92%;
+            max-width: 430px;
+            margin: 60px auto;
+            background: white;
+            padding: 25px;
+            border-radius: 18px;
+            box-shadow: 0 5px 25px rgba(0,0,0,.08);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px;
+            margin-bottom: 13px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            border: 0;
+            border-radius: 10px;
+            background: #111827;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .error {
+            background: #fee2e2;
+            color: #b91c1c;
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .link {
+            text-align: center;
+            margin-top: 18px;
+        }
+
+        .link a {
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="box">
+
+    <h1>إنشاء حساب</h1>
+
+    {% if error %}
+        <div class="error">
+            {{ error }}
+        </div>
+    {% endif %}
+
+    <form method="POST">
+
+        <input
+            type="text"
+            name="name"
+            placeholder="الاسم"
+            required
+        >
+
+        <input
+            type="tel"
+            name="phone"
+            placeholder="رقم الهاتف"
+            required
+        >
+
+        <input
+            type="password"
+            name="password"
+            placeholder="كلمة المرور"
+            minlength="6"
+            required
+        >
+
+        <input
+            type="password"
+            name="confirm_password"
+            placeholder="تأكيد كلمة المرور"
+            minlength="6"
+            required
+        >
+
+        <button type="submit">
+            إنشاء الحساب
+        </button>
+
+    </form>
+
+    <div class="link">
+        لديك حساب؟
+        <a href="/login">تسجيل الدخول</a>
+    </div>
+
+</div>
+
+</body>
+</html>

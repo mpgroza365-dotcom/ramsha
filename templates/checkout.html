@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>إتمام الطلب - رمشة</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+    <style>
+        .checkout-page {
+            max-width: 700px;
+            margin: auto;
+        }
+
+        .checkout-card {
+            background: #fff;
+            border: 1px solid #eee;
+            border-radius: 20px;
+            padding: 18px;
+            margin-bottom: 14px;
+            box-shadow: 0 3px 14px rgba(0,0,0,.04);
+        }
+
+        .checkout-card h2 {
+            margin: 0 0 15px;
+            font-size: 18px;
+        }
+
+        .form-group {
+            margin-bottom: 13px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 13px;
+            padding: 13px;
+            font-size: 14px;
+            outline: none;
+            background: #fafafa;
+        }
+
+        .form-group textarea {
+            min-height: 85px;
+            resize: vertical;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            border-color: #ff6900;
+            background: #fff;
+        }
+
+        .payment-option {
+            display: block;
+            border: 2px solid #eee;
+            border-radius: 15px;
+            padding: 14px;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+
+        .payment-option input {
+            margin-left: 7px;
+        }
+
+        .payment-option.active {
+            border-color: #ff6900;
+            background: #fff7f1;
+        }
+
+        .payment-title {
+            font-weight: bold;
+            font-size: 15px;
+        }
+
+        .payment-description {
+            display: block;
+            color: #888;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .shamcash-box {
+            display: none;
+            margin-top: 12px;
+            padding: 15px;
+            background: #fafafa;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .shamcash-box.show {
+            display: block;
+        }
+
+        .shamcash-box img {
+            width: 240px;
+            max-width: 100%;
+            border-radius: 12px;
+            margin: 10px auto;
+        }
+
+        .shamcash-note {
+            font-size: 12px;
+            color: #777;
+            line-height: 1.8;
+        }
+
+        .summary-line {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 11px;
+            font-size: 14px;
+        }
+
+        .summary-total {
+            border-top: 1px solid #eee;
+            padding-top: 13px;
+            margin-top: 13px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .summary-total strong {
+            color: #ff6900;
+        }
+
+        .confirm-order {
+            width: 100%;
+            height: 53px;
+            border-radius: 15px;
+            background: #ff6900;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .confirm-order:active {
+            transform: scale(.98);
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="topbar">
+
+    <div class="brand">
+        <span class="brand-icon">⚡</span>
+        <span>رمشة</span>
+    </div>
+
+    <div class="header-actions">
+
+        <a href="/cart"
+           class="header-btn"
+           style="text-decoration:none;">
+            🛒
+        </a>
+
+        <a href="/"
+           class="header-btn"
+           style="text-decoration:none;">
+            🏠
+        </a>
+
+    </div>
+
+</header>
+
+
+<main>
+
+<div class="checkout-page">
+
+    <div class="cart-title">
+
+        <h1>إتمام الطلب</h1>
+
+        <p>
+            أدخل معلومات التوصيل واختر طريقة الدفع
+        </p>
+
+    </div>
+
+
+    <!-- CUSTOMER INFORMATION -->
+
+    <div class="checkout-card">
+
+        <h2>📦 معلومات التوصيل</h2>
+
+        <div class="form-group">
+
+            <label>
+                الاسم الكامل
+            </label>
+
+            <input
+                type="text"
+                id="customerName"
+                placeholder="اكتب اسمك الكامل"
+            >
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>
+                رقم الهاتف
+            </label>
+
+            <input
+                type="tel"
+                id="customerPhone"
+                placeholder="09xxxxxxxx"
+            >
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>
+                العنوان
+            </label>
+
+            <input
+                type="text"
+                id="customerAddress"
+                placeholder="المدينة - المنطقة - الشارع"
+            >
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>
+                ملاحظات الطلب
+            </label>
+
+            <textarea
+                id="customerNotes"
+                placeholder="أي ملاحظات للسائق؟"
+            ></textarea>
+
+        </div>
+
+    </div>
+
+
+    <!-- PAYMENT -->
+
+    <div class="checkout-card">
+
+        <h2>💳 طريقة الدفع</h2>
+
+
+        <label
+            class="payment-option active"
+            id="cashOption"
+        >
+
+            <input
+                type="radio"
+                name="payment"
+                value="cash"
+                checked
+                onchange="selectPayment('cash')"
+            >
+
+            <span class="payment-title">
+                💵 الدفع عند الاستلام
+            </span>
+
+            <span class="payment-description">
+                ادفع نقدًا عند وصول الطلب.
+            </span>
+
+        </label>
+
+
+        <label
+            class="payment-option"
+            id="shamOption"
+        >
+
+            <input
+                type="radio"
+                name="payment"
+                value="shamcash"
+                onchange="selectPayment('shamcash')"
+            >
+
+            <span class="payment-title">
+                📱 شام كاش
+            </span>
+
+            <span class="payment-description">
+                ادفع إلكترونيًا عبر شام كاش.
+            </span>
+
+        </label>
+
+
+        <div
+            id="shamcashBox"
+            class="shamcash-box"
+        >
+
+            <strong>
+                📱 ادفع عبر شام كاش
+            </strong>
+
+            <br>
+
+            <img
+                src="{{ url_for('static', filename='images/shamcash_qr.jpg') }}"
+                alt="Sham Cash QR"
+            >
+
+            <div class="shamcash-note">
+
+                امسح رمز QR باستخدام تطبيق شام كاش،
+                ثم أكمل عملية التحويل.
+
+                <br>
+
+                بعد التحويل، اكتب رقم العملية في الحقل التالي.
+
+            </div>
+
+
+            <div
+                class="form-group"
+                style="text-align:right;margin-top:12px;"
+            >
+
+                <label>
+                    رقم عملية التحويل
+                </label>
+
+                <input
+                    type="text"
+                    id="transactionNumber"
+                    placeholder="أدخل رقم العملية"
+                >
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- SUMMARY -->
+
+    <div class="checkout-card">
+
+        <h2>🧾 ملخص الطلب</h2>
+
+        <div class="summary-line">
+
+            <span>
+                المجموع
+            </span>
+
+            <strong>
+                {{ subtotal }} ل.س
+            </strong>
+
+        </div>
+
+
+        <div class="summary-line">
+
+            <span>
+                🛵 أجور التوصيل
+            </span>
+
+            <strong>
+                {{ delivery_fee }} ل.س
+            </strong>
+
+        </div>
+
+
+        <div class="summary-line summary-total">
+
+            <span>
+                الإجمالي
+            </span>
+
+            <strong>
+                {{ grand_total }} ل.س
+            </strong>
+
+        </div>
+
+    </div>
+
+
+    <button
+        class="confirm-order"
+        onclick="confirmOrder()"
+    >
+        ✅ تأكيد الطلب
+    </button>
+
+</div>
+
+</main>
+
+
+<nav class="bottom-nav">
+
+    <a href="/">
+        <span>🏠</span>
+        الرئيسية
+    </a>
+
+    <a href="/cart">
+        <span>🛒</span>
+        السلة
+    </a>
+
+    <a href="/checkout" class="active">
+        <span>📦</span>
+        الطلب
+    </a>
+
+    <a href="#">
+        <span>👤</span>
+        حسابي
+    </a>
+
+</nav>
+
+
+<script>
+
+function selectPayment(type) {
+
+    const cashOption =
+        document.getElementById("cashOption");
+
+    const shamOption =
+        document.getElementById("shamOption");
+
+    const shamBox =
+        document.getElementById("shamcashBox");
+
+
+    cashOption.classList.remove("active");
+
+    shamOption.classList.remove("active");
+
+
+    if (type === "shamcash") {
+
+        shamOption.classList.add("active");
+
+        shamBox.classList.add("show");
+
+    } else {
+
+        cashOption.classList.add("active");
+
+        shamBox.classList.remove("show");
+
+    }
+}
+
+
+function confirmOrder() {
+
+    const name =
+        document.getElementById("customerName").value.trim();
+
+    const phone =
+        document.getElementById("customerPhone").value.trim();
+
+    const address =
+        document.getElementById("customerAddress").value.trim();
+
+    const notes =
+        document.getElementById("customerNotes")
+        ? document.getElementById("customerNotes").value.trim()
+        : "";
+
+    if (!name) {
+        alert("يرجى إدخال الاسم");
+        return;
+    }
+
+    if (!phone) {
+        alert("يرجى إدخال رقم الهاتف");
+        return;
+    }
+
+    if (!address) {
+        alert("يرجى إدخال العنوان");
+        return;
+    }
+
+    const paymentElement =
+        document.querySelector('input[name="payment"]:checked');
+
+    if (!paymentElement) {
+        alert("يرجى اختيار طريقة الدفع");
+        return;
+    }
+
+    const payment = paymentElement.value;
+
+    let transaction = "";
+
+    if (payment === "shamcash") {
+
+        transaction =
+            document.getElementById("transactionNumber")
+            .value
+            .trim();
+
+        if (!transaction) {
+            alert("يرجى إدخال رقم عملية شام كاش");
+            return;
+        }
+    }
+
+    const button = document.querySelector(".confirm-order");
+
+    if (button) {
+        button.disabled = true;
+        button.textContent = "جاري حفظ الطلب...";
+    }
+
+    fetch("/api/order", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            name: name,
+            phone: phone,
+            address: address,
+            notes: notes,
+            payment: payment,
+            transaction_number: transaction
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+
+        if (!data.success) {
+            throw new Error(data.message || "تعذر حفظ الطلب");
+        }
+
+        alert(
+            "تم إرسال الطلب بنجاح ✅\n\n" +
+            "رقم الطلب: #" + data.order_id
+        );
+
+        window.location.href = "/order/" + data.order_id;
+
+    })
+    .catch(error => {
+
+        console.error(error);
+
+        alert(error.message || "حدث خطأ أثناء حفظ الطلب");
+
+        if (button) {
+            button.disabled = false;
+            button.textContent = "تأكيد الطلب";
+        }
+    });
+}
+
+</script>
+
+</body>
+</html>

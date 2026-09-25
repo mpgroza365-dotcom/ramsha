@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة الإدارة - رمشة</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f7f7f7;
+            color: #222;
+        }
+
+        .header {
+            background: #ff7a00;
+            color: white;
+            padding: 22px 16px;
+            text-align: center;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 26px;
+        }
+
+        .header p {
+            margin: 8px 0 0;
+            opacity: .9;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 25px auto;
+            padding: 0 15px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 25px 15px;
+            text-align: center;
+            text-decoration: none;
+            color: #222;
+            box-shadow: 0 3px 12px rgba(0,0,0,.07);
+            transition: .2s;
+        }
+
+        .card:active {
+            transform: scale(.98);
+        }
+
+        .icon {
+            font-size: 42px;
+            margin-bottom: 10px;
+        }
+
+        .title {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .desc {
+            color: #777;
+            font-size: 13px;
+            margin-top: 7px;
+        }
+
+        .logout {
+            display: block;
+            margin-top: 20px;
+            background: #ffe5e5;
+            color: #c00;
+            text-decoration: none;
+            text-align: center;
+            padding: 14px;
+            border-radius: 12px;
+            font-weight: bold;
+        }
+
+        @media (max-width: 500px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="header">
+    <h1>⚙️ لوحة إدارة رمشة</h1>
+    <p>إدارة التطبيق والمتجر</p>
+</div>
+
+<div class="container">
+
+    <div class="grid">
+
+        <a class="card" href="/admin/orders">
+            <div class="icon">📦</div>
+            <div class="title">الطلبات</div>
+            <div class="desc">عرض وإدارة طلبات العملاء</div>
+        </a>
+
+        <a class="card" href="/admin/products">
+            <div class="icon">🛍️</div>
+            <div class="title">المنتجات</div>
+            <div class="desc">إضافة وتعديل وتعطيل المنتجات</div>
+        </a>
+
+        <a class="card" href="/admin/categories">
+            <div class="icon">📂</div>
+            <div class="title">الأقسام</div>
+            <div class="desc">إدارة أقسام المتجر</div>
+        </a>
+
+        <a class="card" href="/admin/disabled">
+            <div class="icon">♻️</div>
+            <div class="title">المعطلة</div>
+            <div class="desc">إعادة تفعيل المنتجات والأقسام</div>
+        </a>
+
+        <a class="card" href="/admin/settings">
+            <div class="icon">⚙️</div>
+            <div class="title">الإعدادات</div>
+            <div class="desc">إدارة أجور التوصيل وإعدادات التطبيق</div>
+        </a>
+
+    </div>
+
+    <a class="logout" href="/admin/logout">
+        🚪 تسجيل الخروج
+    </a>
+
+</div>
+
+</body>
+</html>

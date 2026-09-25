@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تعديل المنتج - رمشة</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f6f8;
+            color: #222;
+        }
+
+        .header {
+            background: #ff7a00;
+            color: white;
+            padding: 18px;
+            text-align: center;
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 0 15px;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 3px 12px rgba(0,0,0,.08);
+        }
+
+        label {
+            display: block;
+            margin: 14px 0 7px;
+            font-weight: bold;
+        }
+
+        input,
+        textarea,
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-size: 15px;
+            font-family: Arial, sans-serif;
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .save {
+            width: 100%;
+            margin-top: 20px;
+            border: 0;
+            background: #ff7a00;
+            color: white;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .back {
+            display: block;
+            margin-top: 12px;
+            text-align: center;
+            background: #f1f1f1;
+            color: #333;
+            text-decoration: none;
+            padding: 13px;
+            border-radius: 12px;
+            font-weight: bold;
+        }
+
+        .error {
+            background: #ffe5e5;
+            color: #c00;
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="header">
+    ✏️ تعديل المنتج
+</div>
+
+<div class="container">
+
+    <div class="card">
+
+        {% if error %}
+            <div class="error">
+                {{ error }}
+            </div>
+        {% endif %}
+
+        <form method="POST" enctype="multipart/form-data">
+
+            <label>اسم المنتج</label>
+            <input
+                type="text"
+                name="name"
+                value="{{ product.name }}"
+                required
+            >
+
+            <label>الوصف</label>
+            <textarea name="description">{{ product.description or "" }}</textarea>
+
+            <label>السعر</label>
+            <input
+                type="number"
+                name="price"
+                value="{{ product.price }}"
+                min="0"
+                required
+            >
+
+            <label>المتجر</label>
+            <input
+                type="text"
+                name="store"
+                value="{{ product.store or "" }}"
+            >
+
+            <label>القسم</label>
+            <select name="category_id">
+
+                <option value="">بدون قسم</option>
+
+                {% for category in categories %}
+                    <option
+                        value="{{ category.id }}"
+                        {% if product.category_id == category.id %}selected{% endif %}
+                    >
+                        {{ category.icon }} {{ category.name }}
+                    </option>
+                {% endfor %}
+
+            </select>
+
+            <label>📷 صورة المنتج</label>
+
+            {% if product.image %}
+                <div style="margin-bottom:10px;text-align:center;">
+                    <img
+                        src="{{ product.image }}"
+                        alt="{{ product.name }}"
+                        style="max-width:180px;max-height:180px;border-radius:12px;object-fit:cover;"
+                    >
+                </div>
+            {% endif %}
+
+            <input
+                type="file"
+                name="image"
+                accept="image/jpeg,image/png,image/webp"
+                style="padding:10px;background:#fafafa;"
+            >
+
+            <div style="margin-top:7px;color:#888;font-size:13px;">
+                اختر صورة جديدة من هاتفك إذا أردت تغيير الصورة الحالية
+            </div>
+
+            <button class="save" type="submit">
+                💾 حفظ التعديلات
+            </button>
+
+        </form>
+
+        <a class="back" href="/admin/products">
+            ↩️ العودة إلى المنتجات
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+</html>

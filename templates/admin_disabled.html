@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>العناصر المعطلة - رمشة</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f6f8;
+            color: #222;
+        }
+
+        .header {
+            background: #ff7a00;
+            color: white;
+            padding: 18px;
+            text-align: center;
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .header a {
+            display: inline-block;
+            margin-top: 12px;
+            background: white;
+            color: #ff7a00;
+            text-decoration: none;
+            padding: 8px 18px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 20px auto;
+            padding: 0 15px;
+        }
+
+        .section {
+            background: white;
+            padding: 18px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+            box-shadow: 0 3px 12px rgba(0,0,0,.08);
+        }
+
+        .section h2 {
+            margin: 0 0 15px;
+        }
+
+        .products {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .product {
+            border: 1px solid #eee;
+            border-radius: 14px;
+            padding: 15px;
+        }
+
+        .product-name {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .info {
+            color: #777;
+            line-height: 1.8;
+            margin-top: 8px;
+        }
+
+        .category {
+            border: 1px solid #eee;
+            border-radius: 14px;
+            padding: 15px;
+            margin-bottom: 10px;
+        }
+
+        .category-name {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .empty {
+            color: #777;
+            text-align: center;
+            padding: 15px;
+        }
+
+        @media (max-width: 600px) {
+            .products {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="header">
+    ♻️ العناصر المعطلة
+
+    <a href="/admin/products">
+        🛍️ المنتجات
+    </a>
+
+    <a href="/admin/categories">
+        📂 الأقسام
+    </a>
+
+    <a href="/admin/logout">
+        🔒 تسجيل الخروج
+    </a>
+</div>
+
+<div class="container">
+
+    <div class="section">
+        <h2>🛍️ المنتجات المعطلة</h2>
+
+        {% if products %}
+
+            <div class="products">
+
+                {% for product in products %}
+
+                <div class="product">
+
+                    <div class="product-name">
+                        {{ product.name }}
+                    </div>
+
+                    <div class="info">
+                        💰 السعر: {{ product.price }}<br>
+                        🏪 المتجر: {{ product.store or "غير محدد" }}<br>
+                        📂 القسم: {{ product.category or "بدون قسم" }}<br>
+                        🔢 رقم المنتج: #{{ product.id }}
+                    </div>
+
+                    <form method="POST"
+                          action="/admin/products/{{ product.id }}/restore"
+                          onsubmit="return confirm('هل تريد إعادة تفعيل هذا المنتج؟');"
+                          style="margin-top:12px;">
+                        <button type="submit"
+                                style="width:100%;border:0;background:#e8f8ee;color:#168a45;padding:11px;border-radius:10px;font-weight:bold;cursor:pointer;">
+                            ♻️ إعادة تفعيل المنتج
+                        </button>
+                    </form>
+
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+        {% else %}
+
+            <div class="empty">
+                لا توجد منتجات معطلة حاليًا
+            </div>
+
+        {% endif %}
+
+    </div>
+
+    <div class="section">
+        <h2>📂 الأقسام المعطلة</h2>
+
+        {% if categories %}
+
+            {% for category in categories %}
+
+            <div class="category">
+
+                <div class="category-name">
+                    {{ category.icon }} {{ category.name }}
+                </div>
+
+                <div class="info">
+                    🔢 رقم القسم: #{{ category.id }}
+                </div>
+
+                <form method="POST"
+                      action="/admin/categories/{{ category.id }}/restore"
+                      onsubmit="return confirm('هل تريد إعادة تفعيل هذا القسم؟');"
+                      style="margin-top:12px;">
+                    <button type="submit"
+                            style="width:100%;border:0;background:#e8f8ee;color:#168a45;padding:11px;border-radius:10px;font-weight:bold;cursor:pointer;">
+                        ♻️ إعادة تفعيل القسم
+                    </button>
+                </form>
+
+            </div>
+
+            {% endfor %}
+
+        {% else %}
+
+            <div class="empty">
+                لا توجد أقسام معطلة حاليًا
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+</body>
+</html>

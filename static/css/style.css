@@ -1,0 +1,591 @@
+/* تنسيقات عامة لتطبيق رمشة متوافقة مع الهاتف */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #f4f6f5;
+    font-family: 'Cairo', sans-serif;
+    margin: 0;
+    padding: 0;
+    direction: rtl;
+    padding-bottom: 80px;
+    color: #123524;
+    width: 100%;
+    overflow-x: hidden;
+}
+
+/* شريط التنقل العلوي */
+.topbar {
+    background-color: #1b4d3e;
+    color: #ffffff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    width: 100%;
+    position: sticky;
+    top: 0;
+    z-index: 99;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: bold;
+    font-size: 18px;
+    color: #ffffff;
+    text-decoration: none;
+}
+
+.brand-icon {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.brand-icon svg {
+    width: 100%;
+    height: 100%;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.header-btn {
+    background-color: rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+    padding: 5px 10px;
+    border-radius: 8px;
+    font-size: 11px;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.menu-btn {
+    background: none;
+    border: none;
+    color: #ffffff;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 0 4px;
+}
+
+/* القسم الترحيبي (البانر) */
+.welcome {
+    background: linear-gradient(135deg, #1b4d3e 0%, #2e6f5c 100%);
+    color: #ffffff;
+    border-radius: 14px;
+    padding: 16px;
+    margin: 12px;
+    box-shadow: 0 4px 12px rgba(27, 77, 62, 0.15);
+}
+
+.welcome-small {
+    font-size: 12px;
+    opacity: 0.9;
+}
+
+.welcome-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 6px 0;
+}
+
+.welcome-logo-icon {
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+}
+
+.welcome-logo-icon svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.welcome-logo-text h1 {
+    margin: 0;
+    color: #ffffff;
+    font-size: 22px;
+    font-weight: 900;
+}
+
+.welcome-logo-text div {
+    font-size: 10px;
+    opacity: 0.85;
+    direction: ltr;
+    text-align: right;
+}
+
+.welcome p {
+    margin: 6px 0 0 0;
+    font-size: 12px;
+    opacity: 0.95;
+}
+
+/* شريط البحث */
+.search-box {
+    background-color: #ffffff;
+    border: 1px solid #d1ded9;
+    border-radius: 25px;
+    padding: 8px 14px;
+    margin: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+}
+
+.search-box input {
+    border: none;
+    outline: none;
+    width: 100%;
+    font-size: 13px;
+    background: transparent;
+    font-family: 'Cairo', sans-serif;
+}
+
+/* شريط الفئات والأقسام */
+.categories {
+    display: flex;
+    gap: 8px;
+    padding: 0 12px;
+    overflow-x: auto;
+    margin-bottom: 12px;
+    -webkit-overflow-scrolling: touch;
+}
+
+.categories::-webkit-scrollbar {
+    display: none;
+}
+
+.category {
+    background-color: #ffffff;
+    color: #1b4d3e;
+    border: 1px solid #d1ded9;
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-size: 12px;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+    font-family: 'Cairo', sans-serif;
+    flex-shrink: 0;
+}
+
+.category.active, .category:hover {
+    background-color: #1b4d3e;
+    color: #ffffff;
+    border-color: #1b4d3e;
+}
+
+/* عنوان الأقسام */
+.section-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 12px;
+    margin-bottom: 8px;
+}
+
+.section-head h2 {
+    margin: 0;
+    font-size: 15px;
+    color: #123524;
+}
+
+.section-head p {
+    margin: 0;
+    font-size: 10px;
+    color: #64748b;
+}
+
+.view-all {
+    background: none;
+    border: none;
+    color: #1b4d3e;
+    font-size: 11px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* شبكة المنتجات في الرئيسية (عمودان متناسقان للهاتف) */
+.products {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    padding: 0 12px;
+}
+
+.product-card {
+    background-color: #ffffff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+    border: 1px solid #edf2f0;
+    display: flex;
+    flex-direction: column;
+}
+
+.product-image {
+    position: relative;
+    width: 100%;
+    height: 110px;
+    background: #f1f5f3;
+}
+
+.product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.favorite {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    background: rgba(255, 255, 255, 0.85);
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+}
+
+.product-info {
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    justify-content: space-between;
+}
+
+.store {
+    font-size: 9px;
+    color: #64748b;
+}
+
+.product-info h3 {
+    margin: 3px 0 6px 0;
+    font-size: 12px;
+    color: #123524;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.product-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.product-bottom strong {
+    font-size: 13px;
+    color: #1b4d3e;
+}
+
+.product-bottom small {
+    font-size: 9px;
+}
+
+.add-btn {
+    background-color: #1b4d3e;
+    color: #ffffff;
+    border: none;
+    border-radius: 50%;
+    width: 26px;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+/* تنسيقات صفحة السلة */
+.cart-page {
+    padding: 12px;
+    max-width: 100%;
+}
+
+.cart-title h1 {
+    font-size: 18px;
+    color: #1b4d3e;
+    margin: 0 0 3px 0;
+}
+
+.cart-title p {
+    font-size: 12px;
+    color: #64748b;
+    margin: 0 0 12px 0;
+}
+
+.cart-items {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.cart-item {
+    background-color: #ffffff;
+    border-radius: 10px;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+    border: 1px solid #edf2f0;
+    position: relative;
+}
+
+.cart-item img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 8px;
+    background: #f1f5f3;
+    flex-shrink: 0;
+}
+
+.cart-item-info {
+    flex-grow: 1;
+    min-width: 0;
+}
+
+.cart-store {
+    font-size: 9px;
+    color: #64748b;
+}
+
+.cart-item-info h3 {
+    margin: 2px 0 4px 0;
+    font-size: 13px;
+    color: #123524;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.cart-price {
+    font-size: 12px;
+    font-weight: bold;
+    color: #1b4d3e;
+    margin-bottom: 6px;
+}
+
+.cart-price small {
+    font-size: 9px;
+}
+
+.quantity-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.quantity-btn {
+    background-color: #f1f5f3;
+    color: #1b4d3e;
+    border: 1px solid #d1ded9;
+    border-radius: 6px;
+    width: 24px;
+    height: 24px;
+    font-size: 13px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.quantity {
+    font-size: 13px;
+    font-weight: bold;
+    color: #123524;
+}
+
+.remove-btn {
+    background: none;
+    border: none;
+    color: #dc2626;
+    font-size: 18px;
+    cursor: pointer;
+    padding: 4px;
+}
+
+.clear-cart-form {
+    margin-bottom: 12px;
+    text-align: left;
+}
+
+.clear-cart-btn {
+    background-color: #fee2e2;
+    color: #dc2626;
+    border: none;
+    border-radius: 8px;
+    padding: 6px 10px;
+    font-size: 11px;
+    font-family: 'Cairo', sans-serif;
+    cursor: pointer;
+}
+
+.cart-summary {
+    background-color: #ffffff;
+    border-radius: 10px;
+    padding: 12px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+    border: 1px solid #edf2f0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.cart-summary div {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: #475569;
+}
+
+.cart-summary hr {
+    border: none;
+    border-top: 1px solid #edf2f0;
+    margin: 4px 0;
+}
+
+.grand-total {
+    font-size: 14px !important;
+    font-weight: bold;
+    color: #123524 !important;
+}
+
+.checkout-btn {
+    background-color: #1b4d3e;
+    color: #ffffff;
+    border: none;
+    border-radius: 10px;
+    padding: 10px;
+    font-size: 14px;
+    font-weight: bold;
+    font-family: 'Cairo', sans-serif;
+    cursor: pointer;
+    text-align: center;
+    margin-top: 4px;
+}
+
+.empty-cart {
+    text-align: center;
+    padding: 30px 15px;
+}
+
+.empty-cart-icon {
+    font-size: 40px;
+    margin-bottom: 8px;
+}
+
+.empty-cart h2 {
+    font-size: 16px;
+    color: #123524;
+    margin: 0 0 4px 0;
+}
+
+.empty-cart p {
+    font-size: 12px;
+    color: #64748b;
+    margin: 0 0 15px 0;
+}
+
+.back-shopping {
+    background-color: #1b4d3e;
+    color: #ffffff;
+    padding: 8px 16px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+/* شريط التنقل السفلي الثابت للهاتف */
+.bottom-nav {
+    background-color: #ffffff;
+    border-top: 1px solid #e2e8f0;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    padding: 6px 0;
+    z-index: 100;
+}
+
+.bottom-nav a {
+    text-decoration: none;
+    color: #64748b;
+    font-size: 10px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+}
+
+.bottom-nav a.active {
+    color: #1b4d3e;
+    font-weight: bold;
+}
+
+/* القائمة الجانبية (Side Menu) للهاتف */
+.side-menu {
+    position: fixed;
+    top: 0;
+    right: -260px;
+    width: 240px;
+    height: 100%;
+    background: #ffffff;
+    box-shadow: -4px 0 15px rgba(0,0,0,0.1);
+    transition: 0.3s ease;
+    z-index: 1000;
+    padding: 15px;
+    box-sizing: border-box;
+}
+
+.side-menu.active {
+    right: 0;
+}
+
+.side-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 12px;
+    margin-bottom: 12px;
+}
+
+.side-links a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 0;
+    color: #334155;
+    text-decoration: none;
+    font-size: 13px;
+}

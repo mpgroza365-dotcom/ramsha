@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إدارة الأقسام - رمشة</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f6f8;
+            color: #222;
+        }
+
+        .header {
+            background: #ff7a00;
+            color: white;
+            padding: 18px;
+            text-align: center;
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .header a {
+            display: inline-block;
+            margin-top: 12px;
+            background: white;
+            color: #ff7a00;
+            text-decoration: none;
+            padding: 8px 18px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 0 15px;
+        }
+
+        .top-bar {
+            background: white;
+            padding: 15px;
+            border-radius: 16px;
+            margin-bottom: 18px;
+            box-shadow: 0 3px 12px rgba(0,0,0,.08);
+        }
+
+        .top-bar h2 {
+            margin: 0 0 12px;
+            font-size: 20px;
+        }
+
+        .add-button {
+            display: block;
+            text-align: center;
+            background: #ff7a00;
+            color: white;
+            text-decoration: none;
+            padding: 13px;
+            border-radius: 12px;
+            font-weight: bold;
+        }
+
+        .categories {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .category {
+            background: white;
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 3px 12px rgba(0,0,0,.08);
+            text-align: center;
+        }
+
+        .icon {
+            font-size: 42px;
+            margin-bottom: 10px;
+        }
+
+        .name {
+            font-size: 19px;
+            font-weight: bold;
+        }
+
+        .info {
+            color: #777;
+            font-size: 13px;
+            margin-top: 8px;
+        }
+
+        @media (max-width: 600px) {
+            .categories {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="header">
+    📂 إدارة أقسام رمشة
+
+    <a href="/admin/products">
+        🛍️ إدارة المنتجات
+    </a>
+
+    <a href="/admin/logout">
+        🔒 تسجيل الخروج
+    </a>
+</div>
+
+<div class="container">
+
+    <div class="top-bar">
+        <h2>📂 الأقسام الحالية</h2>
+
+        <div style="color:#777;margin-bottom:12px;">
+            عدد الأقسام: <strong>{{ categories|length }}</strong>
+        </div>
+
+        <a class="add-button" href="/admin/categories/add">
+            ➕ إضافة قسم جديد
+        </a>
+    </div>
+
+    <div class="categories">
+
+        {% for category in categories %}
+
+        <div class="category">
+
+            <div class="icon">
+                {{ category.icon }}
+            </div>
+
+            <div class="name">
+                {{ category.name }}
+            </div>
+
+            <div class="info">
+                رقم القسم: #{{ category.id }}
+            </div>
+
+            <a href="/admin/categories/{{ category.id }}/edit"
+               style="
+               display:block;
+               margin-top:12px;
+               text-align:center;
+               background:#f1f1f1;
+               color:#333;
+               text-decoration:none;
+               padding:11px;
+               border-radius:10px;
+               font-weight:bold;
+               ">
+                ✏️ تعديل القسم
+            </a>
+
+            <form method="POST"
+                  action="/admin/categories/{{ category.id }}/delete"
+                  onsubmit="return confirm('هل تريد تعطيل هذا القسم؟');"
+                  style="margin-top:8px;">
+                <button
+                    type="submit"
+                    style="
+                    width:100%;
+                    border:0;
+                    background:#ffe5e5;
+                    color:#c00;
+                    padding:11px;
+                    border-radius:10px;
+                    font-weight:bold;
+                    cursor:pointer;
+                    ">
+                    🗑️ تعطيل القسم
+                </button>
+            </form>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+</body>
+</html>

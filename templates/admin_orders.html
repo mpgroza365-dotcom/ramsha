@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إدارة الطلبات - رمشة</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f6f8;
+            color: #222;
+        }
+
+        .header {
+            background: #ff7a00;
+            color: white;
+            padding: 18px;
+            text-align: center;
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 20px auto;
+            padding: 0 15px;
+        }
+
+        .order {
+            background: white;
+            border-radius: 16px;
+            padding: 18px;
+            margin-bottom: 18px;
+            box-shadow: 0 3px 12px rgba(0,0,0,.08);
+        }
+
+        .order-head {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+
+        .order-id {
+            font-size: 20px;
+            font-weight: bold;
+            color: #ff7a00;
+        }
+
+        .status {
+            background: #fff3e8;
+            color: #ff7a00;
+            padding: 7px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+
+        .info {
+            line-height: 1.9;
+            margin-bottom: 15px;
+        }
+
+        .items {
+            border-top: 1px solid #eee;
+            padding-top: 12px;
+        }
+
+        .item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #f1f1f1;
+        }
+
+        .total {
+            margin-top: 15px;
+            font-size: 19px;
+            font-weight: bold;
+            color: #111;
+        }
+
+        .empty {
+            background: white;
+            border-radius: 16px;
+            padding: 40px 20px;
+            text-align: center;
+            color: #777;
+        }
+
+        @media (max-width: 600px) {
+            .item {
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="header">
+    🛍️ إدارة طلبات رمشة
+
+    <div style="margin-top:12px;">
+        <a href="/admin/logout"
+           style="
+           display:inline-block;
+           background:white;
+           color:#ff7a00;
+           text-decoration:none;
+           padding:8px 18px;
+           border-radius:10px;
+           font-size:14px;
+           font-weight:bold;
+           ">
+            🔒 تسجيل الخروج
+        </a>
+    </div>
+</div>
+
+<div class="container">
+
+{% set ns = namespace(new=0, preparing=0, delivered=0, cancelled=0, sales=0) %}
+
+{% for o in orders %}
+    {% if o.status == "جديد" %}
+        {% set ns.new = ns.new + 1 %}
+    {% elif o.status == "قيد التجهيز" %}
+        {% set ns.preparing = ns.preparing + 1 %}
+    {% elif o.status == "تم التوصيل" %}
+        {% set ns.delivered = ns.delivered + 1 %}
+    {% elif o.status == "ملغي" %}
+        {% set ns.cancelled = ns.cancelled + 1 %}
+    {% endif %}
+
+    {% if o.status != "ملغي" %}
+        {% set ns.sales = ns.sales + o.grand_total %}
+    {% endif %}
+{% endfor %}
+
+<div style="
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:10px;
+    margin-bottom:18px;
+">
+
+    <div style="background:white;padding:15px;border-radius:15px;box-shadow:0 3px 12px rgba(0,0,0,.08);">
+        <div style="color:#777;font-size:13px;">📦 إجمالي الطلبات</div>
+        <div style="font-size:24px;font-weight:bold;margin-top:5px;">{{ orders|length }}</div>
+    </div>
+
+    <div style="background:white;padding:15px;border-radius:15px;box-shadow:0 3px 12px rgba(0,0,0,.08);">
+        <div style="color:#777;font-size:13px;">🟠 جديد</div>
+        <div style="font-size:24px;font-weight:bold;margin-top:5px;color:#ff7a00;">{{ ns.new }}</div>
+    </div>
+
+    <div style="background:white;padding:15px;border-radius:15px;box-shadow:0 3px 12px rgba(0,0,0,.08);">
+        <div style="color:#777;font-size:13px;">🔵 قيد التجهيز</div>
+        <div style="font-size:24px;font-weight:bold;margin-top:5px;color:#1976d2;">{{ ns.preparing }}</div>
+    </div>
+
+    <div style="background:white;padding:15px;border-radius:15px;box-shadow:0 3px 12px rgba(0,0,0,.08);">
+        <div style="color:#777;font-size:13px;">🟢 تم التوصيل</div>
+        <div style="font-size:24px;font-weight:bold;margin-top:5px;color:#218838;">{{ ns.delivered }}</div>
+    </div>
+
+    <div style="background:white;padding:15px;border-radius:15px;box-shadow:0 3px 12px rgba(0,0,0,.08);">
+        <div style="color:#777;font-size:13px;">🔴 ملغي</div>
+        <div style="font-size:24px;font-weight:bold;margin-top:5px;color:#d32f2f;">{{ ns.cancelled }}</div>
+    </div>
+
+    <div style="background:#ff7a00;color:white;padding:15px;border-radius:15px;box-shadow:0 3px 12px rgba(0,0,0,.08);">
+        <div style="font-size:13px;opacity:.9;">💰 إجمالي المبيعات</div>
+        <div style="font-size:22px;font-weight:bold;margin-top:5px;">{{ ns.sales }}</div>
+    </div>
+
+</div>
+
+<div class="filters" style="
+    background:white;
+    padding:15px;
+    border-radius:16px;
+    margin-bottom:18px;
+    box-shadow:0 3px 12px rgba(0,0,0,.08);
+">
+
+    <input
+        id="orderSearch"
+        type="text"
+        placeholder="🔎 ابحث برقم الطلب أو الاسم أو الهاتف..."
+        style="
+            width:100%;
+            padding:13px;
+            border:1px solid #ddd;
+            border-radius:12px;
+            font-size:15px;
+            outline:none;
+        "
+    >
+
+    <div style="
+        display:flex;
+        gap:8px;
+        overflow-x:auto;
+        margin-top:12px;
+        padding-bottom:2px;
+    ">
+
+        <button class="filter-btn active" data-status="all" type="button">
+            📋 الكل
+        </button>
+
+        <button class="filter-btn" data-status="جديد" type="button">
+            🟠 جديد
+        </button>
+
+        <button class="filter-btn" data-status="قيد التجهيز" type="button">
+            🔵 قيد التجهيز
+        </button>
+
+        <button class="filter-btn" data-status="تم التوصيل" type="button">
+            🟢 تم التوصيل
+        </button>
+
+        <button class="filter-btn" data-status="ملغي" type="button">
+            🔴 ملغي
+        </button>
+
+    </div>
+</div>
+
+<style>
+.filter-btn {
+    border:0;
+    border-radius:10px;
+    padding:10px 14px;
+    background:#f1f1f1;
+    color:#333;
+    font-size:14px;
+    white-space:nowrap;
+    cursor:pointer;
+}
+
+.filter-btn.active {
+    background:#ff7a00;
+    color:white;
+}
+
+.order.hidden {
+    display:none !important;
+}
+</style>
+
+
+    {% if orders %}
+
+        {% for order in orders %}
+
+        <div class="order" data-status="{{ order.status }}">
+
+            <div class="order-head">
+                <div class="order-id">
+                    الطلب #{{ order.id }}
+                </div>
+
+                <div class="status">
+                    {{ order.status }}
+                </div>
+            </div>
+
+            <div class="info">
+                👤 <strong>الاسم:</strong> {{ order.customer_name }}<br>
+                📞 <strong>الهاتف:</strong> {{ order.phone }}<br>
+                📍 <strong>العنوان:</strong> {{ order.address }}<br>
+
+                {% if order.notes %}
+                    📝 <strong>ملاحظات:</strong> {{ order.notes }}<br>
+                {% endif %}
+
+                💳 <strong>الدفع:</strong>
+                {% if order.payment_method == "shamcash" %}
+                    شام كاش
+                {% else %}
+                    الدفع عند الاستلام
+                {% endif %}
+
+                {% if order.transaction_number %}
+                    <br>
+                    🔢 <strong>رقم العملية:</strong>
+                    {{ order.transaction_number }}
+                {% endif %}
+
+                <br>
+                🕐 <strong>التاريخ:</strong> {{ order.created_at }}
+            </div>
+
+            <div class="items">
+
+                {% for item in order['items'] %}
+
+                <div class="item">
+                    <span>
+                        {{ item.product_name }}
+                        × {{ item.quantity }}
+                    </span>
+
+                    <strong>
+                        {{ item.item_total }}
+                    </strong>
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+            <div class="total">
+                الإجمالي: {{ order.grand_total }}
+            </div>
+
+            <div style="margin-top:18px; padding-top:15px; border-top:1px solid #eee;">
+                <div style="font-weight:bold; margin-bottom:10px;">
+                    تغيير حالة الطلب:
+                </div>
+
+                <form method="POST"
+                      action="/admin/orders/{{ order.id }}/status"
+                      style="display:flex; gap:8px; flex-wrap:wrap;">
+
+                    <button name="status"
+                            value="جديد"
+                            type="submit"
+                            style="border:0; border-radius:10px; padding:10px 14px; background:#fff3e8; color:#ff7a00;">
+                        🟠 جديد
+                    </button>
+
+                    <button name="status"
+                            value="قيد التجهيز"
+                            type="submit"
+                            style="border:0; border-radius:10px; padding:10px 14px; background:#eaf3ff; color:#1976d2;">
+                        🔵 قيد التجهيز
+                    </button>
+
+                    <button name="status"
+                            value="تم التوصيل"
+                            type="submit"
+                            style="border:0; border-radius:10px; padding:10px 14px; background:#eaf8ef; color:#218838;">
+                        🟢 تم التوصيل
+                    </button>
+
+                    <button name="status"
+                            value="ملغي"
+                            type="submit"
+                            style="border:0; border-radius:10px; padding:10px 14px; background:#ffecec; color:#d32f2f;">
+                        🔴 ملغي
+                    </button>
+
+                </form>
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    {% else %}
+
+        <div class="empty">
+            لا توجد طلبات حتى الآن
+        </div>
+
+    {% endif %}
+
+</div>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const searchInput = document.getElementById("orderSearch");
+    const filterButtons = document.querySelectorAll(".filter-btn");
+    const orders = document.querySelectorAll(".order");
+
+    let selectedStatus = "all";
+
+    function filterOrders() {
+
+        const search = searchInput.value.trim().toLowerCase();
+
+        orders.forEach(function(order) {
+
+            const text = order.innerText.toLowerCase();
+            const status = order.dataset.status || "";
+
+            const searchMatch =
+                search === "" || text.includes(search);
+
+            const statusMatch =
+                selectedStatus === "all" ||
+                status === selectedStatus;
+
+            if (searchMatch && statusMatch) {
+                order.classList.remove("hidden");
+            } else {
+                order.classList.add("hidden");
+            }
+
+        });
+    }
+
+    searchInput.addEventListener("input", filterOrders);
+
+    filterButtons.forEach(function(button) {
+
+        button.addEventListener("click", function () {
+
+            filterButtons.forEach(function(btn) {
+                btn.classList.remove("active");
+            });
+
+            this.classList.add("active");
+
+            selectedStatus = this.dataset.status;
+
+            filterOrders();
+        });
+
+    });
+
+});
+</script>
+
+</body>
+</html>

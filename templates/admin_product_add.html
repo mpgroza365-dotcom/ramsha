@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>إضافة منتج - رمشة</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f6f8;
+            color: #222;
+        }
+
+        .header {
+            background: #ff7a00;
+            color: white;
+            padding: 18px;
+            text-align: center;
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .header a {
+            display: inline-block;
+            margin-top: 12px;
+            background: white;
+            color: #ff7a00;
+            text-decoration: none;
+            padding: 8px 18px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 20px auto;
+            padding: 0 15px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 3px 12px rgba(0,0,0,.08);
+        }
+
+        .field {
+            margin-bottom: 16px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 7px;
+        }
+
+        input,
+        textarea,
+        select {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #ddd;
+            border-radius: 11px;
+            font-size: 15px;
+            outline: none;
+            font-family: Arial, sans-serif;
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+            border-color: #ff7a00;
+        }
+
+        .error {
+            background: #ffecec;
+            color: #d32f2f;
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 16px;
+        }
+
+        .submit {
+            width: 100%;
+            border: 0;
+            background: #ff7a00;
+            color: white;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .back {
+            display: block;
+            text-align: center;
+            margin-top: 12px;
+            padding: 13px;
+            background: #f1f1f1;
+            color: #333;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="header">
+    ➕ إضافة منتج جديد - رمشة
+
+    <a href="/admin/products">
+        📦 العودة للمنتجات
+    </a>
+</div>
+
+<div class="container">
+
+    <div class="card">
+
+        {% if error %}
+            <div class="error">
+                {{ error }}
+            </div>
+        {% endif %}
+
+        <form method="POST" enctype="multipart/form-data">
+
+            <div class="field">
+                <label>اسم المنتج *</label>
+                <input
+                    type="text"
+                    name="name"
+                    placeholder="مثال: عصير برتقال"
+                    required
+                >
+            </div>
+
+            <div class="field">
+                <label>الوصف</label>
+                <textarea
+                    name="description"
+                    placeholder="وصف المنتج..."
+                ></textarea>
+            </div>
+
+            <div class="field">
+                <label>السعر *</label>
+                <input
+                    type="number"
+                    name="price"
+                    min="0"
+                    placeholder="مثال: 500"
+                    required
+                >
+            </div>
+
+            <div class="field">
+                <label>المتجر</label>
+                <input
+                    type="text"
+                    name="store"
+                    placeholder="مثال: سوبر ماركت"
+                >
+            </div>
+
+            <div class="field">
+                <label>القسم</label>
+
+                <select name="category_id">
+                    <option value="">بدون قسم</option>
+
+                    {% for category in categories %}
+                        <option value="{{ category.id }}">
+                            {{ category.icon }} {{ category.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="field">
+                <label>📷 صورة المنتج</label>
+                <input
+                    type="file"
+                    name="image"
+                    accept="image/jpeg,image/png,image/webp"
+                    style="padding:10px;background:#fafafa;"
+                >
+                <div style="margin-top:7px;color:#888;font-size:13px;">
+                    اختر صورة من هاتفك — JPG أو PNG أو WEBP
+                </div>
+            </div>
+
+            <button class="submit" type="submit">
+                ✅ حفظ المنتج
+            </button>
+
+        </form>
+
+        <a class="back" href="/admin/products">
+            ↩️ إلغاء والعودة
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+</html>

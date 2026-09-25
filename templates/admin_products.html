@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إدارة المنتجات - رمشة</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f6f8;
+            color: #222;
+        }
+
+        .header {
+            background: #ff7a00;
+            color: white;
+            padding: 18px;
+            text-align: center;
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .header a {
+            display: inline-block;
+            margin-top: 12px;
+            background: white;
+            color: #ff7a00;
+            text-decoration: none;
+            padding: 8px 18px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 20px auto;
+            padding: 0 15px;
+        }
+
+        .top-bar {
+            background: white;
+            padding: 15px;
+            border-radius: 16px;
+            margin-bottom: 18px;
+            box-shadow: 0 3px 12px rgba(0,0,0,.08);
+        }
+
+        .top-bar h2 {
+            margin: 0 0 12px;
+            font-size: 20px;
+        }
+
+        .products {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .product {
+            background: white;
+            border-radius: 16px;
+            padding: 15px;
+            box-shadow: 0 3px 12px rgba(0,0,0,.08);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 12px;
+            background: #eee;
+        }
+
+        .product-name {
+            font-size: 19px;
+            font-weight: bold;
+            margin-top: 12px;
+        }
+
+        .product-info {
+            color: #666;
+            line-height: 1.9;
+            margin-top: 8px;
+        }
+
+        .price {
+            color: #ff7a00;
+            font-size: 20px;
+            font-weight: bold;
+            margin-top: 8px;
+        }
+
+        .badge {
+            display: inline-block;
+            background: #fff3e8;
+            color: #ff7a00;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 13px;
+            margin-top: 5px;
+        }
+
+        .empty {
+            background: white;
+            border-radius: 16px;
+            padding: 40px 20px;
+            text-align: center;
+            color: #777;
+        }
+
+        @media (max-width: 600px) {
+            .products {
+                grid-template-columns: 1fr;
+            }
+
+            .product-image {
+                height: 210px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="header">
+    🛍️ إدارة منتجات رمشة
+
+    <a href="/admin/orders">
+        📦 إدارة الطلبات
+    </a>
+
+    <a href="/admin/logout">
+        🔒 تسجيل الخروج
+    </a>
+</div>
+
+<div class="container">
+
+    <div class="top-bar">
+        <h2>📦 المنتجات الحالية</h2>
+
+        <div style="color:#777;margin-bottom:12px;">
+            عدد المنتجات: <strong>{{ products|length }}</strong>
+        </div>
+
+        <a href="/admin/products/add"
+           style="
+           display:block;
+           text-align:center;
+           background:#ff7a00;
+           color:white;
+           text-decoration:none;
+           padding:13px;
+           border-radius:12px;
+           font-weight:bold;
+           ">
+            ➕ إضافة منتج جديد
+        </a>
+
+        <a href="/admin/categories"
+           style="
+           display:block;
+           margin-top:10px;
+           text-align:center;
+           background:#fff3e8;
+           color:#ff7a00;
+           text-decoration:none;
+           padding:13px;
+           border-radius:12px;
+           font-weight:bold;
+           ">
+            📂 إدارة الأقسام
+        </a>
+    </div>
+
+    {% if products %}
+
+        <div class="products">
+
+            {% for product in products %}
+
+            <div class="product">
+
+                {% if product.image %}
+                    <img
+                        class="product-image"
+                        src="{{ product.image }}"
+                        alt="{{ product.name }}"
+                    >
+                {% else %}
+                    <div class="product-image"
+                         style="display:flex;align-items:center;justify-content:center;">
+                        🛍️ لا توجد صورة
+                    </div>
+                {% endif %}
+
+                <div class="product-name">
+                    {{ product.name }}
+                </div>
+
+                <div class="product-info">
+                    🏪 المتجر: {{ product.store or "غير محدد" }}<br>
+
+                    📂 القسم:
+                    <span class="badge">
+                        {{ product.category or "بدون قسم" }}
+                    </span>
+                </div>
+
+                <div class="price">
+                    💰 {{ product.price }}
+                </div>
+
+                <div style="margin-top:10px;color:#999;font-size:12px;">
+                    رقم المنتج: #{{ product.id }}
+                </div>
+
+                <a href="/admin/products/{{ product.id }}/edit"
+                   style="
+                   display:block;
+                   margin-top:12px;
+                   text-align:center;
+                   background:#f1f1f1;
+                   color:#333;
+                   text-decoration:none;
+                   padding:11px;
+                   border-radius:10px;
+                   font-weight:bold;
+                   ">
+                    ✏️ تعديل المنتج
+                </a>
+
+                <form method="POST"
+                      action="/admin/products/{{ product.id }}/delete"
+                      onsubmit="return confirm('هل تريد تعطيل هذا المنتج؟');"
+                      style="margin-top:8px;">
+                    <button
+                        type="submit"
+                        style="
+                        width:100%;
+                        border:0;
+                        background:#ffe5e5;
+                        color:#c00;
+                        padding:11px;
+                        border-radius:10px;
+                        font-weight:bold;
+                        cursor:pointer;
+                        ">
+                        🗑️ تعطيل المنتج
+                    </button>
+                </form>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+
+        <div class="empty">
+            لا توجد منتجات حاليًا
+        </div>
+
+    {% endif %}
+
+</div>
+
+</body>
+</html>

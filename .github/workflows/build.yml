@@ -1,0 +1,38 @@
+name: Build APK with Buildozer
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    - name: Install dependencies
+      run: |
+        sudo apt update
+        sudo apt install -y git zip unzip openjdk-17-jdk autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libreadline-dev libsqlite3-dev libssl-dev libffi-dev
+
+    - name: Install Buildozer and Cython
+      run: |
+        pip install --upgrade pip
+        pip install --user Cython==0.29.36 buildozer
+
+    - name: Build with Buildozer
+      run: |
+        export PATH=$PATH:~/.local/bin
+        buildozer -v android debug
+
+    - name: Upload APK Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: ramsha-apk
+        path: bin/*.apk

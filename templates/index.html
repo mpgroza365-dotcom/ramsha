@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>رمشة</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+<header class="topbar">
+
+    <div class="brand">
+        <span class="brand-icon">
+    <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" aria-label="RAMSHA">
+        <circle cx="24" cy="24" r="22" fill="#16A34A"/>
+        <path d="M10 27c6-1 10-5 14-11l5 5 9-2-6 9-5-4c-4 5-9 8-17 7"
+              fill="none"
+              stroke="#ffffff"
+              stroke-width="3.2"
+              stroke-linecap="round"
+              stroke-linejoin="round"/>
+        <circle cx="31" cy="14" r="5.5" fill="#DDF7E7"/>
+        <path d="M31 11.5v3l2 1.5"
+              fill="none"
+              stroke="#12813A"
+              stroke-width="1.8"
+              stroke-linecap="round"/>
+    </svg>
+</span>
+        <span>رمشة</span>
+    </div>
+
+    <div class="header-actions">
+
+        <a href="/orders" class="header-btn" style="text-decoration:none;text-align:center;display:flex;align-items:center;justify-content:center;">
+            📦
+            <span>طلباتي</span>
+        </a>
+
+        <a href="/cart" class="header-btn cart-btn" style="text-decoration:none;text-align:center;display:flex;align-items:center;justify-content:center;">
+            🛒
+            <span>السلة</span>
+            <b id="cartCount">0</b>
+        </a>
+
+        <button class="menu-btn" onclick="toggleMenu()">
+            ☰
+        </button>
+
+    </div>
+
+</header>
+
+
+<aside id="sideMenu" class="side-menu">
+
+    <div class="side-header">
+        <strong>رمشة ➤◷</strong>
+
+        <button onclick="toggleMenu()">×</button>
+    </div>
+
+    <div class="side-links">
+
+        {% if session.get("user_id") %}
+        <div style="padding:15px 12px;margin-bottom:8px;background:#f8fafc;border-radius:12px;">
+            <div style="font-size:13px;color:#64748b;">مرحبًا بك 👋</div>
+            <strong style="font-size:17px;">{{ session.get("user_name") }}</strong>
+        </div>
+        {% else %}
+        <a href="/login">
+            🔐
+            <span>تسجيل الدخول</span>
+        </a>
+
+        <a href="/register">
+            📝
+            <span>إنشاء حساب</span>
+        </a>
+        {% endif %}
+
+        <a href="/">
+            🏠
+            <span>الرئيسية</span>
+        </a>
+
+        <a href="/orders">
+            📦
+            <span>طلباتي</span>
+        </a>
+
+        <a href="/cart">
+            🛒
+            <span>السلة</span>
+        </a>
+
+        <a href="#">
+            ❤️
+            <span>المفضلة</span>
+        </a>
+
+        {% if session.get("user_id") %}
+        <a href="/logout" style="color:#dc2626;">
+            🚪
+            <span>تسجيل الخروج</span>
+        </a>
+        {% endif %}
+
+    </div>
+
+</aside>
+
+<div id="overlay" onclick="toggleMenu()"></div>
+
+
+<main>
+
+    <section class="welcome">
+
+        <div>
+            <span class="welcome-small">أهلاً بك في</span>
+
+            <div class="welcome-logo">
+                <div class="welcome-logo-icon">
+                    <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="24" cy="24" r="22" fill="#16A34A"/>
+                        <path d="M10 27c6-1 10-5 14-11l5 5 9-2-6 9-5-4c-4 5-9 8-17 7"
+                              fill="none"
+                              stroke="#ffffff"
+                              stroke-width="3.2"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"/>
+                        <circle cx="31" cy="14" r="5.5" fill="#DDF7E7"/>
+                        <path d="M31 11.5v3l2 1.5"
+                              fill="none"
+                              stroke="#12813A"
+                              stroke-width="1.8"
+                              stroke-linecap="round"/>
+                    </svg>
+                </div>
+
+                <div class="welcome-logo-text">
+                    <h1>رمشة</h1>
+                    <div>RAMSHA - توصيل سريع وأكيد</div>
+                </div>
+            </div>
+
+            <p>كل ما تحتاجه، يصل إليك بسرعة.</p>
+        </div>
+
+    </section>
+
+
+    <section class="search-box">
+
+        <span>🔍</span>
+
+        <input
+            type="text"
+            id="searchInput"
+            placeholder="ابحث عن وجبة، منتج، صيدلية..."
+        >
+
+    </section>
+
+
+    <section class="categories">
+
+        {% for category in categories %}
+
+        <button class="category {% if loop.first %}active{% endif %}"
+                onclick="filterCategory('{{ category.name }}', this)">
+
+            <span>{{ category.icon }}</span>
+            {{ category.name }}
+
+        </button>
+
+        {% endfor %}
+
+    </section>
+
+
+    <section class="section-head">
+
+        <div>
+            <h2>اكتشف المنتجات</h2>
+            <p>اختر ما يناسبك</p>
+        </div>
+
+        <button class="view-all">عرض الكل</button>
+
+    </section>
+
+
+    <section class="products" id="products">
+
+        {% for product in products %}
+
+        <article class="product-card"
+                 data-category="{{ product.category }}"
+                 data-name="{{ product.name }}">
+
+            <div class="product-image">
+
+                <img src="{{ product.image }}"
+                     alt="{{ product.name }}"
+                     loading="lazy">
+
+                <button class="favorite">♡</button>
+
+            </div>
+
+            <div class="product-info">
+
+                <span class="store">
+                    {{ product.store }}
+                </span>
+
+                <h3>{{ product.name }}</h3>
+
+                <div class="product-bottom">
+
+                    <strong>
+                        {{ product.price }}
+                        <small>ل.س</small>
+                    </strong>
+
+                    <button
+                        class="add-btn"
+                        onclick="addToCart('{{ product.id }}', this)">
+
+                        +
+                    </button>
+
+                </div>
+
+            </div>
+
+        </article>
+
+        {% endfor %}
+
+    </section>
+
+</main>
+
+
+<nav class="bottom-nav">
+
+    <a class="active" href="#">
+        <span>🏠</span>
+        الرئيسية
+    </a>
+
+    <a href="#">
+        <span>🔎</span>
+        بحث
+    </a>
+
+    <a href="/cart" class="bottom-cart">
+        <span>🛒</span>
+        السلة
+        <b id="bottomCartCount">0</b>
+    </a>
+
+    <a href="/account">
+        <span>👤</span>
+        حسابي
+    </a>
+
+</nav>
+
+
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+
+</body>
+</html>

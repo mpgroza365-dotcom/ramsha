@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>السلة - رمشة</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+<header class="topbar">
+
+    <div class="brand">
+        <span class="brand-icon">⚡</span>
+        <span>رمشة</span>
+    </div>
+
+    <div class="header-actions">
+
+        <a href="/" class="header-btn" style="text-decoration:none;">
+            🏠
+        </a>
+
+        <a href="/cart"
+           class="header-btn cart-btn"
+           style="text-decoration:none;position:relative;">
+
+            🛒
+
+            <b id="cartCount">
+                {{ cart_count }}
+            </b>
+
+        </a>
+
+    </div>
+
+</header>
+
+
+<main>
+
+<div class="cart-page">
+
+    <div class="cart-title">
+
+        <h1>🛒 سلة المشتريات</h1>
+
+        <p>
+            {% if items %}
+                المنتجات التي اخترتها
+            {% else %}
+                السلة فارغة حاليًا
+            {% endif %}
+        </p>
+
+    </div>
+
+
+    {% if items %}
+
+        <div class="cart-items">
+
+            {% for item in items %}
+
+            <div class="cart-item">
+
+                <img
+                    src="{{ item.product.image }}"
+                    alt="{{ item.product.name }}"
+                >
+
+                <div class="cart-item-info">
+
+                    <span class="cart-store">
+                        {{ item.product.store }}
+                    </span>
+
+                    <h3>
+                        {{ item.product.name }}
+                    </h3>
+
+                    <div class="cart-price">
+                        {{ item.product.price }}
+                        <small>ل.س</small>
+                    </div>
+
+
+                    <div class="quantity-row">
+
+                        <form
+                            method="POST"
+                            action="/cart/increase/{{ item.product.id }}"
+                        >
+                            <button
+                                type="submit"
+                                class="quantity-btn"
+                            >
+                                +
+                            </button>
+                        </form>
+
+
+                        <span class="quantity">
+                            {{ item.quantity }}
+                        </span>
+
+
+                        <form
+                            method="POST"
+                            action="/cart/decrease/{{ item.product.id }}"
+                        >
+                            <button
+                                type="submit"
+                                class="quantity-btn"
+                            >
+                                −
+                            </button>
+                        </form>
+
+                    </div>
+
+                </div>
+
+
+                <form
+                    method="POST"
+                    action="/cart/remove/{{ item.product.id }}"
+                >
+
+                    <button
+                        type="submit"
+                        class="remove-btn"
+                        title="حذف"
+                    >
+                        ×
+                    </button>
+
+                </form>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+
+        <form
+            method="POST"
+            action="/cart/clear"
+            class="clear-cart-form"
+        >
+
+            <button
+                type="submit"
+                class="clear-cart-btn"
+            >
+                🗑️ تفريغ السلة
+            </button>
+
+        </form>
+
+
+        <div class="cart-summary">
+
+            <div>
+                <span>المجموع الفرعي</span>
+
+                <strong>
+                    {{ subtotal }} ل.س
+                </strong>
+            </div>
+
+
+            <div>
+                <span>🛵 أجور التوصيل</span>
+
+                <strong>
+                    {{ delivery_fee }} ل.س
+                </strong>
+            </div>
+
+
+            <hr>
+
+
+            <div class="grand-total">
+
+                <span>
+                    الإجمالي
+                </span>
+
+                <strong>
+                    {{ grand_total }} ل.س
+                </strong>
+
+            </div>
+
+
+            <button
+                type="button"
+                class="checkout-btn"
+                onclick="window.location.href='/checkout'"
+            >
+                متابعة الطلب
+            </button>
+
+        </div>
+
+    {% else %}
+
+        <div class="empty-cart">
+
+            <div class="empty-cart-icon">
+                🛒
+            </div>
+
+            <h2>
+                السلة فارغة
+            </h2>
+
+            <p>
+                لم تضف أي منتجات إلى السلة بعد.
+            </p>
+
+            <a
+                href="/"
+                class="back-shopping"
+            >
+                العودة للتسوق
+            </a>
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+</main>
+
+
+<nav class="bottom-nav">
+
+    <a href="/">
+        <span>🏠</span>
+        الرئيسية
+    </a>
+
+    <a href="/">
+        <span>🔎</span>
+        بحث
+    </a>
+
+    <a href="/cart" class="active bottom-cart">
+
+        <span>🛒</span>
+
+        السلة
+
+        <b id="bottomCartCount">
+            {{ cart_count }}
+        </b>
+
+    </a>
+
+    <a href="#">
+        <span>👤</span>
+        حسابي
+    </a>
+
+</nav>
+
+</body>
+</html>

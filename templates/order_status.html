@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>متابعة الطلب - رمشة</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f6f8;
+            color: #222;
+        }
+
+        .header {
+            background: #ff7a00;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 25px auto;
+            padding: 0 15px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 4px 18px rgba(0,0,0,.08);
+        }
+
+        .success {
+            text-align: center;
+            font-size: 50px;
+        }
+
+        .order-number {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: #ff7a00;
+            margin: 10px 0 20px;
+        }
+
+        .status-box {
+            text-align: center;
+            background: #fff3e8;
+            color: #ff7a00;
+            border-radius: 15px;
+            padding: 18px;
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .info {
+            line-height: 2;
+            border-top: 1px solid #eee;
+            padding-top: 15px;
+        }
+
+        .home-btn {
+            display: block;
+            text-align: center;
+            background: #ff7a00;
+            color: white;
+            text-decoration: none;
+            padding: 14px;
+            border-radius: 12px;
+            margin-top: 22px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="header">
+    🛍️ رمشة
+</div>
+
+<div class="container">
+
+    <div class="card">
+
+        <div class="success">✅</div>
+
+        <div class="order-number">
+            تم استلام طلبك #{{ order.id }}
+        </div>
+
+        <div class="status-box">
+            حالة الطلب: {{ order.status }}
+        </div>
+
+        <div class="info">
+            👤 <strong>الاسم:</strong> {{ order.customer_name }}<br>
+            📞 <strong>الهاتف:</strong> {{ order.phone }}<br>
+            📍 <strong>العنوان:</strong> {{ order.address }}<br>
+
+            {% if order.notes %}
+                📝 <strong>الملاحظات:</strong> {{ order.notes }}<br>
+            {% endif %}
+
+            💳 <strong>الدفع:</strong>
+            {% if order.payment_method == "shamcash" %}
+                شام كاش
+            {% else %}
+                الدفع عند الاستلام
+            {% endif %}
+
+            <br>
+
+            💰 <strong>الإجمالي:</strong>
+            {{ order.grand_total }}
+        </div>
+
+        <a href="/" class="home-btn">
+            🏠 العودة للرئيسية
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+</html>
