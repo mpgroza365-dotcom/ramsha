@@ -68,3 +68,7 @@ bin_dir = ./bin
 
 # (str) Path to build target
 # build_dir = .buildozer
+
+android.accept_sdk_license = True
+android.api = 33
+android.min_api = 21
