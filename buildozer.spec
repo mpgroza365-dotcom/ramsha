@@ -72,3 +72,4 @@ bin_dir = ./bin
 android.accept_sdk_license = True
 android.api = 33
 android.min_api = 21
+android.sdk_build_tools_version = 33.0.2
